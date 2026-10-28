@@ -1,0 +1,30 @@
+{
+  "name": "project-team-all-in-one",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "description": "Neon PostgreSQL과 Express 기반 팀 프로젝트 도우미",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test --test-concurrency=1 model.test.js server.test.js api.test.js teams.test.js tasks.test.js completion.test.js repository.test.js env.test.js auth.test.js",
+    "db:check": "node scripts/check-db.js",
+    "db:migrate": "node scripts/migrate-db.js",
+    "test:dom": "node --test frontend.test.js",
+    "test:browser": "node --test --test-concurrency=1 browser.test.js completion-browser.test.js",
+    "test:db": "node scripts/smoke-auth-db.js",
+    "check:release": "node scripts/check-release.js"
+  },
+  "engines": {
+    "node": "24.x"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.2.0",
+    "dotenv": "^18.0.9",
+    "express": "^5.3.0"
+  },
+  "devDependencies": {
+    "jsdom": "^26.1.0",
+    "playwright-core": "^1.64.1"
+  }
+}

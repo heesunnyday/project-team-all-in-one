@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="일정, 할 일, 피드백을 한곳에서 관리하는 팀 프로젝트 도우미">
+  <title>Project Team, All In ONE</title>
+  <meta name="theme-color" content="#0d0d12">
+  <link rel="stylesheet" href="style.css">
+  <script src="model.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="./" aria-label="Project Team, All In ONE 홈"><span class="brand-icon" aria-hidden="true">P</span><span class="brand-name">Project Team, All In ONE</span></a>
+      <p class="workspace-label">우리의 워크스페이스</p>
+      <div class="project"><span class="project-icon">✳</span><div><strong id="sidebar-team-name">내 팀 목록</strong><small>함께 만드는 작은 성과</small></div></div>
+      <nav id="project-nav" aria-label="프로젝트 메뉴" role="tablist" aria-orientation="vertical" hidden>
+        <button id="tab-calendar" role="tab" aria-controls="panel-calendar" aria-selected="true" data-tab="calendar"><span>▦</span> Calendar</button>
+        <button id="tab-todos" role="tab" aria-controls="panel-todos" aria-selected="false" tabindex="-1" data-tab="todos"><span>☑</span> To-Do List</button>
+        <button id="tab-feedback" role="tab" aria-controls="panel-feedback" aria-selected="false" tabindex="-1" data-tab="feedback"><span>☷</span> Feedback</button>
+      </nav>
+      <div class="sidebar-note"><span class="status-dot"></span> 프로젝트 데이터 공유<p>데이터는 서버에 저장됩니다.<br>기존 브라우저 데이터는 백업할 수 있어요.</p></div>
+    </aside>
+    <main>
+      <header class="topbar"><span>워크스페이스 <span class="slash">/</span> <span id="header-team-name">내 팀 목록</span></span><div id="profile-bar" class="profile-bar" hidden><span class="profile-name"><strong id="current-user-name"></strong>님</span><span class="profile-separator mypage-separator" aria-hidden="true" hidden>|</span><button id="open-mypage" type="button" class="subtle-button" aria-controls="panel-mypage" aria-pressed="false" hidden>My Page</button><span class="profile-separator" aria-hidden="true">|</span><button id="logout" type="button" class="subtle-button">로그아웃</button></div></header>
+      <div class="content">
+        <section id="auth-screen" class="auth-card" aria-labelledby="auth-title">
+          <p class="eyebrow">Project Team, All In ONE</p><h1 id="auth-title">팀과 함께 시작하세요.</h1>
+          <p class="subtitle">내 팀을 선택하고 팀별 일정과 업무를 관리하세요.</p>
+          <div class="auth-modes" aria-label="계정 메뉴"><button id="mode-login" type="button" aria-pressed="true">로그인</button><button id="mode-register" type="button" aria-pressed="false">회원가입</button></div>
+          <form id="auth-form">
+            <label class="field">이름<input name="name" id="auth-name" required maxlength="50" autocomplete="username" placeholder="로그인에 사용할 이름"></label>
+            <label class="field">비밀번호<input name="password" id="auth-password" type="password" required minlength="8" maxlength="128" autocomplete="current-password" placeholder="8~128자의 비밀번호"></label>
+            <p id="auth-message" role="status" aria-live="polite">이름은 로그인 아이디와 프로필 이름으로 사용됩니다.</p>
+            <button id="auth-submit" type="submit" class="primary">로그인</button>
+          </form>
+        </section>
+        <div class="backup-tools"><button type="button" id="backup-local" class="subtle-button">기존 데이터 JSON 백업</button><span>이 브라우저의 기존 데이터는 삭제하지 않습니다.</span></div>
+        <section id="team-screen" aria-labelledby="teams-title" hidden>
+          <div class="section-heading"><div><p class="eyebrow">OUR TEAMS</p><h1 id="teams-title">내 팀 목록</h1><p class="subtitle">함께할 팀을 선택하세요. 여러 팀에 가입할 수 있어요.</p></div></div>
+          <div class="team-tools"><button type="button" id="new-team" class="primary">+ 팀 만들기</button><button type="button" id="join-team" class="subtle-button">초대 코드로 팀 가입</button><button type="button" id="reload-teams" class="subtle-button">목록 다시 불러오기</button></div>
+          <p id="teams-status" role="status" aria-live="polite"></p><div id="team-list" class="team-list"></div>
+        </section>
+        <div id="project-content" hidden>
+        <section class="team-context" aria-label="현재 팀"><div><span class="eyebrow">현재 팀</span><h2 id="current-team-name"></h2><p id="current-team-description"></p><div id="team-invite"></div></div><div class="team-context-actions"><button type="button" id="back-teams" class="subtle-button">← 내 팀 목록</button><label for="switch-team">팀 전환</label><select id="switch-team" aria-label="팀 전환"></select></div></section>
+        <div class="page-heading"><div><p class="eyebrow">A LITTLE MORE TOGETHER</p><h1>Project Team, All In ONE</h1><p class="subtitle">팀의 일정과 할 일, 피드백을 한곳에 모아보세요.</p></div><div class="today-label" id="today-label"></div></div>
+        <div class="server-check data-tools"><div><strong>프로젝트 데이터</strong><p id="data-status" role="status" aria-live="polite">데이터를 불러오는 중…</p></div><div class="data-buttons"><button type="button" id="reload-data" class="subtle-button">다시 불러오기</button><button type="button" id="link-legacy" class="subtle-button">기존 담당자 연결</button></div></div>
+        <div class="stats" id="stats"></div>
+        <button type="button" id="deadline-banner" class="deadline-banner" aria-controls="panel-mypage" hidden><span class="deadline-banner-icon" aria-hidden="true">⚠</span><span><strong id="deadline-banner-counts"></strong><small>내 업무의 마감일을 확인하세요.</small></span><span class="deadline-banner-link">My Page에서 보기 →</span></button>
+        <section id="panel-calendar" role="tabpanel" aria-labelledby="tab-calendar">
+          <div class="section-heading"><div><h2>Calendar</h2><p>우리 팀의 다음 일정을 확인하세요.</p></div><button class="primary" data-new="events">+ 일정 등록</button></div>
+          <div class="calendar-card"><div class="calendar-toolbar"><div class="month-control"><h3 id="month-title"></h3><button id="prev-month" class="icon-button" aria-label="이전 달">‹</button><button id="next-month" class="icon-button" aria-label="다음 달">›</button><button id="current-month" class="subtle-button">이번 달</button></div><div class="legend"><span><i class="event-dot"></i>일정</span><span><i class="todo-dot"></i>할 일</span></div></div><div class="weekdays" aria-hidden="true"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div id="calendar-grid" class="calendar-grid" aria-label="월별 달력"></div></div>
+          <div class="section-heading day-heading"><div><h2 id="selected-date-title"></h2><p>날짜를 선택하면 일정과 할 일을 볼 수 있어요.</p></div><button class="subtle-button" data-new="events">+ 선택한 날짜에 등록</button></div><div id="day-items" class="item-list"></div>
+        </section>
+        <section id="panel-todos" role="tabpanel" aria-labelledby="tab-todos" hidden><div class="section-heading"><div><h2>To-Do List</h2><p>미완료는 마감일 순으로, 완료 기록은 아래에서 주별로 확인하세요.</p></div><button class="primary" data-new="todos">+ 할 일 등록</button></div><div id="todo-list" class="item-list"></div></section>
+        <section id="panel-feedback" role="tabpanel" aria-labelledby="tab-feedback" hidden><div class="section-heading"><div><h2>Feedback</h2><p>업무별로 수정 요청과 의견을 모아보세요.</p></div><button class="primary" data-new="feedback">+ 피드백 등록</button></div><label class="field feedback-filter">업무별 피드백<select id="feedback-task-filter" aria-label="업무별 피드백"><option value="">전체</option></select></label><div id="feedback-list" class="item-list"></div></section>
+        <section id="panel-mypage" role="region" aria-labelledby="mypage-title" hidden>
+          <div class="section-heading"><div><h2 id="mypage-title" tabindex="-1">My Page</h2><p><strong id="mypage-name"></strong>님에게 배정된 업무와 팀 공통 업무입니다.</p></div></div>
+          <div class="section-heading mypage-subheading"><div><h3>내 투두</h3><p>미완료 업무는 마감일 순으로, 완료 기록은 아래에 모아둡니다.</p></div><button type="button" id="my-deadline-filter" class="subtle-button" aria-pressed="false">마감 알림만 보기</button></div>
+          <div id="my-todo-list" class="item-list"></div>
+          <div class="section-heading mypage-subheading"><div><h3>내 피드백</h3><p>미완료·작업 중 업무는 최신 작성순으로, 완료 기록은 아래에서 확인하세요.</p></div></div>
+          <div id="my-feedback-list" class="item-list"></div>
+        </section>
+        <section class="server-check" aria-label="데이터베이스 연결 테스트"><div><strong>데이터베이스 연결 확인</strong><p id="server-result" role="status" aria-live="polite">버튼을 누르면 서버를 통해 Neon 연결을 확인합니다.</p></div><button type="button" id="test-server" class="subtle-button">연결 테스트</button></section>
+        <footer>작은 진전이 모여, 우리의 프로젝트가 됩니다. <span>Project Team, All In ONE</span></footer>
+        </div>
+      </div>
+    </main>
+  </div>
+  <dialog id="editor"><form id="edit-form"><div class="dialog-heading"><h2 id="editor-title"></h2><button type="button" id="close-editor" class="icon-button" aria-label="닫기">×</button></div><p class="form-note">* 표시는 필수 입력란입니다.</p><div id="form-fields"></div><p id="form-error" class="error" role="alert"></p><div class="dialog-actions"><button type="button" id="cancel-edit" class="subtle-button">취소</button><button class="primary" type="submit">저장하기</button></div></form></dialog>
+  <dialog id="create-team-dialog" aria-labelledby="create-team-title"><form id="create-team-form"><h2 id="create-team-title">팀 만들기</h2><p class="form-note">팀을 만든 사용자가 대표와 팀원으로 등록됩니다.</p><label class="field">팀 이름 *<input name="name" required maxlength="100" placeholder="팀 이름을 입력하세요"></label><label class="field">간단한 설명 (선택)<textarea name="description" maxlength="1000" placeholder="어떤 팀인지 소개해 주세요"></textarea></label><p id="create-team-error" class="error" role="alert"></p><div class="dialog-actions"><button type="button" class="subtle-button" data-close-dialog="create-team-dialog">취소</button><button type="submit" class="primary">팀 만들기</button></div></form></dialog>
+  <dialog id="join-team-dialog" aria-labelledby="join-team-title"><h2 id="join-team-title">초대 코드로 팀 가입</h2><form id="preview-team-form"><label class="field">초대 코드 *<input id="invite-code" name="inviteCode" required maxlength="32" autocomplete="off" spellcheck="false" placeholder="대표에게 받은 초대 코드"></label><button type="submit" class="subtle-button">팀 이름 확인</button></form><div id="team-preview" role="status" aria-live="polite"></div><p id="join-team-error" class="error" role="alert"></p><div class="dialog-actions"><button type="button" class="subtle-button" data-close-dialog="join-team-dialog">취소</button><button type="button" id="confirm-join" class="primary" hidden>확인한 팀에 가입</button></div></dialog>
+  <div id="notification" role="status" aria-live="polite"></div>
+</body>
+</html>
